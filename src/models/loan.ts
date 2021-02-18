@@ -1,4 +1,4 @@
-import { LoanTypes } from './../interfaces/modelInterfaces';
+import { LoanTypes } from '../interfaces/modelInterfaces';
 import mongoose from 'mongoose';
 
 interface LoanInfo {

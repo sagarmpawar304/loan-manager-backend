@@ -1,4 +1,4 @@
-import { Role, Loan } from './../interfaces/modelInterfaces';
+import { Role, Loan } from '../interfaces/modelInterfaces';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
