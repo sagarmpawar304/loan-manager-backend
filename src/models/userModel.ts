@@ -1,21 +1,25 @@
-import { Role, Loan } from '../interfaces/modelInterfaces';
+import { Role, ILoan, PaymentHistory } from '../interfaces/modelInterfaces';
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-interface UserInfo {
+export interface UserInfo {
   name: string;
   email: string;
   password: string;
-  loans?: Loan[];
-  role: Role;
+  loans?: ILoan[];
+  role?: Role;
 }
 
-interface UserDoc extends mongoose.Document<UserInfo> {
+export interface UserDoc extends mongoose.Document<UserInfo> {
+  id: string;
   name: string;
   email: string;
   password: string;
-  loans?: string;
+  loans?: ILoan[];
+  payment_history?: PaymentHistory[];
   role: Role;
+  active: boolean;
+  passwordUpdatedAt: Date;
 }
 
 interface UserModel extends mongoose.Model<UserDoc> {
@@ -28,7 +32,10 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     role: { type: String, default: Role.customer },
     password: { type: String, required: true },
-    loans: { type: mongoose.Schema.Types.ObjectId, ref: 'Loan' },
+    loans: [],
+    payment_history: [],
+    active: { type: Boolean, default: true },
+    passwordUpdatedAt: Date,
   },
   {
     toJSON: {
@@ -38,6 +45,7 @@ const userSchema = new mongoose.Schema(
         delete ret.password;
       },
     },
+    timestamps: true,
   }
 );
 
@@ -46,6 +54,8 @@ userSchema.pre('save', async function (next) {
 
   const incryptedPassword = await bcrypt.hash(this.get('password'), 12);
   this.set('password', incryptedPassword);
+
+  this.set('passwordUpdatedAt', new Date());
 
   next();
 });

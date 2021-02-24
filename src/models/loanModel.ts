@@ -19,8 +19,8 @@ interface LoanModel extends mongoose.Model<LoanDoc> {
 
 const loanSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    interestRate: { type: String },
+    name: { type: String, required: true, unique: true },
+    interestRate: { type: Number },
     type: { type: String },
   },
   {
@@ -30,8 +30,13 @@ const loanSchema = new mongoose.Schema(
         delete ret._id;
       },
     },
+    timestamps: true,
   }
 );
+
+loanSchema.statics.build = (attr: LoanInfo) => {
+  return new Loan(attr);
+};
 
 const Loan = mongoose.model<LoanDoc, LoanModel>('Loan', loanSchema);
 
