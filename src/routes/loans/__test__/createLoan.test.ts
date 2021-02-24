@@ -4,7 +4,7 @@ import { app } from '../../../app';
 
 describe('For Create loans', () => {
   test('Restricated to admin only', async () => {
-    const token = await global.signUp();
+    const { token } = await global.signUp();
     await request(app)
       .post('/api/loan/create')
       .set({ authorization: `Bearer ${token}` })

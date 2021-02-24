@@ -167,7 +167,7 @@ export const getAllUser = async (req: Request, res: Response) => {
   res.status(200).send(users);
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateDetailsByUser = async (req: Request, res: Response) => {
   // @ts-ignore
   const user = await User.findById(req.user?.id);
 

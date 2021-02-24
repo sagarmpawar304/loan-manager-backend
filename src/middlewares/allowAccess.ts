@@ -10,6 +10,7 @@ const allowAccess = (role: Role[]) => async (
   const user = req.user;
 
   if (!role.includes(user?.role!)) {
+    // console.log('from access control');
     throw new UnAuthorizedError();
   }
   next();

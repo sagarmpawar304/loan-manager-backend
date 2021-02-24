@@ -48,6 +48,7 @@ router.post(
   allowAccess([Role.admin]),
   authorizationLoan
 );
+
 router.get('/api/loans', getAllLoans);
 router.get('/api/loan/:id', getLoan);
 router.put(

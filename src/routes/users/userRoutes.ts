@@ -1,4 +1,8 @@
-import { getAllUser, updateUser, updateUsers } from './../../controllers/user';
+import {
+  getAllUser,
+  updateDetailsByUser,
+  updateUsers,
+} from './../../controllers/user';
 import express from 'express';
 import { body } from 'express-validator';
 import { createLoan, getUser, signIn, signUp } from '../../controllers/user';
@@ -55,14 +59,13 @@ router.put(
   auth,
   allowAccess([Role.customer]),
   [
-    body('name').notEmpty().withMessage('Please provide your name'),
     body('password')
       .trim()
       .isLength({ min: 5, max: 16 })
       .withMessage('Password length must be between 5 and 16'),
   ],
   validateRequest,
-  updateUser
+  updateDetailsByUser
 );
 
 router.put(
