@@ -69,7 +69,7 @@ export const signUp = async (req: Request, res: Response) => {
   const token = generateToken(user);
 
   // 5) Send a response
-  res.status(200).json({ user, token });
+  res.status(201).json({ user, token });
 };
 
 export const createLoan = async (req: Request, res: Response) => {

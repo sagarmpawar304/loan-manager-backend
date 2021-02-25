@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "ts-node-dev --no-notify --respawn src/index.ts",
-    "test": "jest --watchAll --no-cache"
+    "test": "jest --watchAll --no-cache --detectOpenHandles"
   },
   "jest": {
     "preset": "ts-jest",

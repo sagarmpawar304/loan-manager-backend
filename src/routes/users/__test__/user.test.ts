@@ -1,10 +1,11 @@
+import { UserDoc } from './../../../models/userModel';
 import request from 'supertest';
 
 import { app } from '../../../app';
 
 describe('For users', () => {
   test('Get all users accessible only for admin and agent', async () => {
-    const { token } = await global.signUp();
+    const { token } = await global.signInUser();
 
     await request(app)
       .get('/api/users')
@@ -14,7 +15,8 @@ describe('For users', () => {
   });
 
   test('It Fails Updated password  is less than rules and this is can be done only by customer', async () => {
-    const { token } = await global.signUp();
+    const { token } = await global.signInUser();
+
     await request(app)
       .put('/api/user')
       .set({ authorization: `Bearer ${token}` })
@@ -22,17 +24,9 @@ describe('For users', () => {
       .expect(400);
   });
 
-  test('Update password if only if it is as per password rules and this is can be done only by customer', async () => {
-    const { token } = await global.signUp();
-    await request(app)
-      .put('/api/user')
-      .set({ authorization: `Bearer ${token}` })
-      .send({ password: '123456' })
-      .expect(200);
-  });
-
   test('Update user status to "Agent".It is possible only for admin', async () => {
-    const { token, user } = await global.signUp();
+    const { token, user } = await global.signInUser();
+
     await request(app)
       .put(`/api/user/auth/${user.id}`)
       .set({ authorization: `Bearer ${token}` })
@@ -41,7 +35,7 @@ describe('For users', () => {
   });
 
   test('Create a loan request by user or by agent on behalf of agent', async () => {
-    const { token, user } = await global.signUp();
+    const { token, user } = await global.signInUser();
     const { token: agentToken, user: agent } = await global.signInAgent();
     const loanId = await global.getLoanId();
 
@@ -58,7 +52,6 @@ describe('For users', () => {
       .expect(200);
 
     expect(response.body.message).toEqual('success');
-
     const responseForAgent = await request(app)
       .post(`/api/user/loan`)
       .set({ authorization: `Bearer ${agentToken}` })
@@ -72,6 +65,18 @@ describe('For users', () => {
       })
       .expect(200);
 
+    // console.log(responseForAgent.body);
+
     expect(responseForAgent.body.message).toEqual('success');
+  });
+
+  test('Update password if only if it is as per password rules and this is can be done only by customer', async () => {
+    const { token } = await global.signInUser();
+
+    await request(app)
+      .put('/api/user')
+      .set({ authorization: `Bearer ${token}` })
+      .send({ password: '123456' })
+      .expect(200);
   });
 });

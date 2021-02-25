@@ -14,11 +14,10 @@ describe('Tests for signin route', () => {
   });
 
   test('Return status 400 for password not matching', async () => {
-    await global.signUp();
     await request(app)
       .post('/api/user/signin')
       .send({
-        email: 'test@test.com',
+        email: 'user@test.com',
         password: '1234',
       })
       .expect(400);
@@ -26,15 +25,12 @@ describe('Tests for signin route', () => {
 
   test('Returns with status of 200 with jwt token for valid credentials', async () => {
     const response = await request(app)
-      .post('/api/user/signup')
+      .post('/api/user/signin')
       .send({
-        name: 'user1',
-        email: 'test@test.com',
+        email: 'user@test.com',
         password: '12345',
-        confirmPassword: '12345',
       })
       .expect(200);
-
     expect(response.body.token).toBeDefined();
   });
 });

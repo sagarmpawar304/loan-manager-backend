@@ -20,7 +20,7 @@ describe('Tests for signin route', () => {
       .post('/api/user/signup')
       .send({
         name: 'user1',
-        email: 'test@test.com',
+        email: 'user1@test.com',
         password: '1234',
         confirmPassword: '1234',
       })
@@ -30,7 +30,7 @@ describe('Tests for signin route', () => {
       .post('/api/user/signup')
       .send({
         name: 'user1',
-        email: 'test@test.com',
+        email: 'user1@test.com',
         password: '1234567891011121314151617',
         confirmPassword: '1234567891011121314151617',
       })
@@ -42,7 +42,7 @@ describe('Tests for signin route', () => {
       .post('/api/user/signup')
       .send({
         name: 'user1',
-        email: 'test@test.com',
+        email: 'user1@test.com',
         password: '12345',
         confirmPassword: '1234',
       })
@@ -54,11 +54,11 @@ describe('Tests for signin route', () => {
       .post('/api/user/signup')
       .send({
         name: 'user1',
-        email: 'test@test.com',
+        email: 'user1@test.com',
         password: '12345',
         confirmPassword: '12345',
       })
-      .expect(200);
+      .expect(201);
 
     expect(response.body.token).toBeDefined();
   });

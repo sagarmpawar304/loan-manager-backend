@@ -18,7 +18,7 @@ export const createLoan = async (req: Request, res: Response) => {
   }
   const loan = Loan.build(req.body);
   await loan.save();
-  res.status(200).json(loan);
+  res.status(201).json(loan);
 };
 
 export const getAllLoans = async (req: Request, res: Response) => {
@@ -107,11 +107,16 @@ export const updatePersonalLoan = async (req: Request, res: Response) => {
   let oldState: any = {};
   Object.assign(oldState, loan.loan);
 
-  const updatedLoan = { ...loan.loan, ...req.body };
-  await loan.updateOne({
-    loan: updatedLoan,
-    history: [...loan.history, oldState],
-  });
+  loan.loan.principle = req.body.principle;
+
+  const updatedLoan = { ...loan.loan };
+  await loan.updateOne(
+    {
+      loan: updatedLoan,
+      history: [...loan.history, oldState],
+    },
+    { new: true }
+  );
 
   // update to user document
   const userLoans = user.loans?.map((userLoan) => {
@@ -122,7 +127,7 @@ export const updatePersonalLoan = async (req: Request, res: Response) => {
     return userLoan;
   });
 
-  await user.updateOne({ loans: userLoans });
+  await user.updateOne({ loans: userLoans }, { new: true });
 
   // action takes place
   res.status(200).json(loan);
@@ -133,7 +138,7 @@ export const authorizationLoan = async (req: Request, res: Response) => {
   // 1) Find loan from personaloan Model
   const loan = await PersonlLoan.findOne({ loanId: id });
   if (!loan) {
-    throw new NotFoundError();
+    throw new NotFoundError('Loan not found');
   }
 
   // 2) Find user
@@ -148,11 +153,14 @@ export const authorizationLoan = async (req: Request, res: Response) => {
   // Update on personal loan document
   loan.loan.status = req.body.action;
 
-  await loan.updateOne({
-    loan: loan.loan,
-    status: req.body.action,
-    history: [...loan.history, oldState],
-  });
+  await loan.updateOne(
+    {
+      loan: loan.loan,
+      status: req.body.action,
+      history: [...loan.history, oldState],
+    },
+    { new: true }
+  );
 
   // update to user document
   const userLoans = user.loans?.map((userLoan) => {
@@ -163,7 +171,7 @@ export const authorizationLoan = async (req: Request, res: Response) => {
     return userLoan;
   });
 
-  await user.updateOne({ loans: userLoans });
+  await user.updateOne({ loans: userLoans }, { new: true });
 
   res.send(loan);
 };
