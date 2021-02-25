@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 
 import { app } from '../app';
 import { UserDoc } from '../models/userModel';
-import { LoanTypes } from '../interfaces/modelInterfaces';
 
 declare global {
   namespace NodeJS {
@@ -79,6 +78,10 @@ beforeAll(async () => {
   } catch (error) {
     console.log(error.message);
   }
+});
+
+beforeEach(async () => {
+  jest.setTimeout(6 * 1000 * 10);
 });
 
 // 3) Close all connections with database
